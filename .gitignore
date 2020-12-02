@@ -93,6 +93,7 @@ packages/
 # Windows Azure Build Output
 csx/
 *.build.csdef
+*.dtbcache.v2
 
 # Windows Store app package directory
 AppPackages/

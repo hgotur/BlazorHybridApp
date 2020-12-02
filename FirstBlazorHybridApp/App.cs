@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.MobileBlazorBindings;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using BlazorRedux;
+using FirstBlazorHybridApp.redux;
 
 namespace FirstBlazorHybridApp
 {
@@ -17,6 +19,7 @@ namespace FirstBlazorHybridApp
                 {
                     // Adds web-specific services such as NavigationManager
                     services.AddBlazorHybrid();
+                    services.AddReduxStore<State, IAction>(new State(), State.RootReducer);
 
                     // Register app-specific services
                     services.AddSingleton<CounterState>();

@@ -1,21 +1,9 @@
 @page "/counter"
-@inject CounterState CounterState
-@implements IDisposable
+@inherits ConnectedComponent
+@using FirstBlazorHybridApp.redux.slices
 
 <h1>Counter</h1>
 
-<p>Current count: @CounterState.CurrentCount</p>
+<p>Current count: @State.CounterState.Counter</p>
 
-<button class="btn btn-primary" @onclick="CounterState.IncrementCount">Click me</button>
-
-@code {
-    protected override void OnInitialized()
-    {
-        CounterState.StateChanged += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        CounterState.StateChanged -= StateHasChanged;
-    }
-}
+<button class="btn btn-primary" @onclick="() => Dispatch(new CounterSlice.IncrementByOne())">Click me</button>
