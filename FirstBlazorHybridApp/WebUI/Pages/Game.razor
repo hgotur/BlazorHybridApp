@@ -1,0 +1,53 @@
+﻿@page "/game"
+@inherits ConnectedComponent
+@using FirstBlazorHybridApp.redux.slices
+
+<h3>Game</h3>
+
+@if (!showAdd)
+{
+    <button class="btn btn-primary" @onclick="() => toggleAdd()">Add Team</button>
+} else {
+    <div>
+        <input type="text" placeholder="Team Name" @bind="name" />
+        <button class="btn btn-primary" @onclick="() => addTeam()">+</button>
+    </div>
+} 
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Teams</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var team in State.GameState.Teams)
+        {
+            <tr>
+                <td>@team.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private string name = "";
+    private bool showAdd = false;
+
+    private void addTeam()
+    {
+        Dispatch(new GameSlice.AddTeam(name));
+        toggleAdd();
+        name = "";
+    }
+
+    private void toggleAdd()
+    {
+        showAdd = !showAdd;
+    }
+
+    protected override void OnInitialized()
+    {
+
+    }
+}

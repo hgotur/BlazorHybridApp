@@ -7,13 +7,13 @@
     <EnableDefaultCssItems>false</EnableDefaultCssItems>
     <WwwRootResourcePath>wwwroot</WwwRootResourcePath>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.MobileBlazorBindings" Version="0.5.50-preview" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />

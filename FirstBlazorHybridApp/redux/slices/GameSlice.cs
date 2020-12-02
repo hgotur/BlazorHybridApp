@@ -1,43 +1,37 @@
-using BlazorRedux;
 using System.Collections.Generic;
-
+using BlazorRedux;
+using FirstBlazorHybridApp.Game;
 namespace FirstBlazorHybridApp.redux.slices
 {
-    public class Team
-    {
-        public string Name { get; set; }
-    }
-
-    public class Player
-    {
-        public string Name { get; set; }
-        public Team Team { get; set; }
-    }
-
-    public class Question
-    {
-        public int Tossup { get; set; }
-        public IEnumerable<int> Bonus { get; set; }
-        public Player? player { get; set; }
-    }
-
     public class GameSlice
     {
         // state
-        public IEnumerable<Question> Questions { get; set; } = new List<Question>();
+        public List<Question> Questions { get; private set; } = new List<Question>();
+        public List<Team> Teams { get; private set; } = new List<Team>();
+        public GameStatus GameStatus { get; private set; } = new GameStatus();
+        public Metadata Metadata { get; private set; } = new Metadata();
 
         // actions
-        public class NextQuestion : IAction { }
+        public class AddTeam : IAction {
+            public string Name { get; private set; }
+
+            public AddTeam(string name)
+            {
+                Name = name;
+            }
+        }
 
         // reducer
-        public static GameSlice GameReducer(GameSlice gameState, IAction action)
+        public static GameSlice GameReducer(GameSlice oldState, IAction action)
         {
             switch (action)
             {
-                case NextQuestion _:
-                    return gameState;
+                case AddTeam a:
+                    GameSlice newState = (GameSlice)oldState.MemberwiseClone();
+                    newState.Teams.Add(new Team(oldState.Metadata, a.Name));
+                    return newState;
                 default:
-                    return gameState;
+                    return oldState;
             }
         }
     }
