@@ -1,0 +1,96 @@
+@inherits ConnectedComponent
+@using FirstBlazorHybridApp.redux.slices
+@using FirstBlazorHybridApp.Game;
+
+<h3>Choose your settings</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Number of Teams</td>
+            <td><input type="number" @bind=this.metadata.NumTeams /></td>
+        </tr>
+        <tr>
+            <td>Number of Active Players Per Team (leave blank if unlimited)</td>
+            <td><input type="number" @bind=this.metadata.NumActivePlayers /></td>
+        </tr>
+        <tr>
+            <td>Points Per Tossup</td>
+            <td><input type="number" @bind=this.metadata.TossupWeight /></td>
+
+        </tr>
+        <tr>
+            <td>Points Per Power</td>
+            <td><input type="number" @bind=this.metadata.PowerWeight /></td>
+        </tr>
+        <tr>
+            <td>Points Per Neg</td>
+            <td><input type="number" @bind=this.metadata.NegWeight /></td>
+        </tr>
+        <tr>
+            <td>Number of Bonuses Per Tossup</td>
+            <td><input type="number" @bind=this.metadata.NumBonusPerTossup /></td>
+        </tr>
+        <tr>
+            <td>Points Per Bonus Part</td>
+            <td><input type="number" @bind=this.metadata.BonusWeight /></td>
+        </tr>
+        <tr>
+            <td>Bouncebacks</td>
+            <td><input type="checkbox" @bind=this.metadata.BounceBacks /> </td>
+        </tr>
+    </tbody>
+</table>
+
+@if (this.errorMessage != null)
+{
+    <div>
+        <p class="text-danger">@this.errorMessage</p>
+    </div>
+}
+
+<button class="btn btn-primary" @onclick="this.startGame">Start Game</button>
+
+@code {
+    private string name = "";
+    private bool showAdd = false;
+    private Metadata metadata = null!;
+    private string? errorMessage = null;
+
+    private void startGame()
+    {
+        if (!this.validateMetadata())
+        {
+            return;
+        }
+
+        this.Dispatch(new GameSlice.StartGame(this.metadata));
+
+    }
+
+    private bool validateMetadata()
+    {
+        if (this.metadata.NumTeams != 2 && this.metadata.BounceBacks)
+        {
+            this.errorMessage = "Must have exactly 2 teams to play with bouncebacks.";
+            return false;
+        }
+        else
+        {
+            this.errorMessage = null;
+            return true;
+        }
+
+    }
+
+    protected override void OnInitialized()
+    {
+        this.metadata = this.State.GameState.Metadata.Clone();
+    }
+}

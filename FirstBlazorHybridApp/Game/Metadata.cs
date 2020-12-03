@@ -9,6 +9,11 @@ namespace FirstBlazorHybridApp.Game {
         public int NumBonusPerTossup { get; set; } = 3;
         public int BonusWeight { get; set; } = 10;
         public bool BounceBacks { get; set; } = false;
+
+        public Metadata Clone()
+        {
+            return (Metadata)this.MemberwiseClone();
+        }
     }
 
     public enum TossupResult
@@ -25,10 +30,17 @@ namespace FirstBlazorHybridApp.Game {
         BOUNCE_BACK
     }
 
-    public class GameStatus
+    public enum GameStatus
     {
-        bool IsInProgress { get; set; } = false;
-        int CurrentQuestion { get; set; } = 0;
-        bool IsInBonus { get; set; } = false;
+        NOT_STARTED,
+        IN_PROGESS,
+        COMPLETED
+    }
+
+    public class GameProgress
+    {
+        public GameStatus Status { get; set; } = GameStatus.NOT_STARTED;
+        public int CurrentQuestion { get; set; } = 0;
+        public bool IsInBonus { get; set; } = false;
     }
 }
