@@ -1,6 +1,6 @@
 namespace FirstBlazorHybridApp.Game {
     public class Metadata {
-        public int? NumActivePlayers { get; set; } = 4;
+        public int? NumActivePlayers { get; set; } = null;
         public int NumTeams { get; set; } = 2;
 
         public int TossupWeight { get; set; } = 10;

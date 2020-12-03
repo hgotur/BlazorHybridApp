@@ -1,0 +1,27 @@
+@inherits ConnectedComponent
+@using FirstBlazorHybridApp.redux.slices
+@using FirstBlazorHybridApp.Game;
+
+<h1>Game</h1>
+
+@foreach (var team in this.State.GameState.Teams)
+{
+    <div>
+        <h3>@team.Name</h3>
+        @foreach (var player in team.ActivePlayers)
+        {
+            <div>
+                <p>@player.Name</p>
+            </div>
+        }
+
+        <AddPlayer Add="addPlayer" Team="team" />
+    </div>
+}
+
+@code {
+    private void addPlayer(string name, Team team)
+    {
+        this.Dispatch(new GameSlice.AddPlayer(name, team));
+    }
+}

@@ -1,0 +1,37 @@
+@using FirstBlazorHybridApp.Game
+
+@if (!this.showAdd)
+{
+    <button class="btn btn-primary" @onclick="this.toggleAdd">Add Player</button>
+}
+else
+{
+<div>
+    <input type="text" placeholder="Team Name" @bind="this.name" />
+    <button class="btn btn-primary" @onclick="() => this.onAdd()">+</button>
+    <button class="btn btn-primary" @onclick="() => this.toggleAdd()">x</button>
+</div>
+}
+
+@code {
+    [Parameter] public Action<string, Team>? Add { get; set; }
+    [Parameter] public Team? Team { get; set; }
+
+    private string name = "";
+    private bool showAdd = false;
+
+    private void toggleAdd()
+    {
+        this.name = "";
+        this.showAdd = !this.showAdd;
+    }
+
+    private void onAdd()
+    {
+        if (this.Add != null && this.Team != null && !String.IsNullOrEmpty(this.name))
+        {
+            this.Add(this.name, this.Team);
+            this.toggleAdd();
+        }
+    }
+}

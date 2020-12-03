@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FirstBlazorHybridApp.Game {
     public class Team
@@ -18,13 +19,27 @@ namespace FirstBlazorHybridApp.Game {
             BenchPlayers = new List<Player>();
         }
 
+        public void Add(Player player) {
+            if (!metadata.NumActivePlayers.HasValue) {
+                ActivePlayers.Add(player);
+            }
+            else {
+                if (ActivePlayers.Count == metadata.NumActivePlayers.Value) {
+                    BenchPlayers.Add(player);
+                }
+                else {
+                    ActivePlayers.Add(player);
+                }
+            }
+        }
+
         public void AddActivePlayer(Player player, int index)
         {
             player.Team = this;
             ActivePlayers.Insert(index, player);
             if (metadata.NumActivePlayers.HasValue)
             {
-                if (ActivePlayers.Count == metadata.NumActivePlayers.Value)
+                if (ActivePlayers.Count > metadata.NumActivePlayers.Value)
                 {
                     Player end = ActivePlayers[ActivePlayers.Count - 1];
                     ActivePlayers.RemoveAt(ActivePlayers.Count - 1);
@@ -54,6 +69,8 @@ namespace FirstBlazorHybridApp.Game {
     public class Player
     {
         public string Name { get; set; }
+
+        [JsonIgnore]
         public Team Team { get; set; }
 
         public Player(string name, Team team)

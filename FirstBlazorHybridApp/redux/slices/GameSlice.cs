@@ -13,12 +13,14 @@ namespace FirstBlazorHybridApp.redux.slices
         public Metadata Metadata { get; private set; } = new Metadata();
 
         // actions
-        public class AddTeam : IAction {
+        public class AddPlayer : IAction {
             public string Name { get; private set; }
+            public Team Team { get; private set; }
 
-            public AddTeam(string name)
+            public AddPlayer(string name, Team team)
             {
                 Name = name;
+                Team = team;
             }
         }
 
@@ -38,15 +40,20 @@ namespace FirstBlazorHybridApp.redux.slices
             GameSlice newState = (GameSlice)oldState.MemberwiseClone();
             switch (action)
             {
-                case AddTeam a:
+                case AddPlayer a:
                     {
-                        newState.Teams.Add(new Team(oldState.Metadata, a.Name));
+                        // TODO: HARSHA: revisit this, don't think we're copying state properly
+                        Team? team = newState.Teams.Find((team) => team.Equals(a.Team));
+                        team?.Add(new Player(a.Name, team));
                         return newState;
                     }
                 case StartGame a:
                     {
                         newState.Metadata = a.Metadata;
                         newState.GameProgress.Status = GameStatus.IN_PROGESS;
+                        for (int i =  0; i < a.Metadata.NumTeams; ++i) {
+                            newState.Teams.Add(new Team(a.Metadata, $"Team {i + 1}"));
+                        }
                         return newState;
                     }
                 default:
