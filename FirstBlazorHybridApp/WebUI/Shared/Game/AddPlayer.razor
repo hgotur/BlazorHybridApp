@@ -8,7 +8,7 @@
 else
 {
 <div>
-    <input type="text" placeholder="Player Name" @bind="this.name" @onkeypress="this.onEnter" @ref="this.inputElt"/>
+    <input type="text" placeholder="Player Name" @bind="this.name" @bind:event="oninput" @onkeypress="this.onEnter" @ref="this.inputElt"/>
     <button class="btn btn-primary" @onclick="() => this.onAdd()">
         <ion-icon name="add-outline" class="icon"></ion-icon>
     </button>

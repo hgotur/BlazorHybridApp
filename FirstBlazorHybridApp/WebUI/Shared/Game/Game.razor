@@ -2,8 +2,6 @@
 @using FirstBlazorHybridApp.redux.slices
 @using FirstBlazorHybridApp.Game;
 
-<h1>Game</h1>
-
 <div class="game-page">
     @foreach (var team in this.State.GameState.Teams)
     {
@@ -14,14 +12,28 @@
                     <AddPlayer Add="addPlayer" Team="team" />
                 </div>
             </div>
-            <div class="active-players">
+            <div class="players active-players">
                 @foreach (var player in team.ActivePlayers)
-                {   
-                    <div>
-                        <p>@player.Name</p>
-                    </div>
+                {
+                    <div class="player">
+                        <div class="player-name">
+                            @player.Name
+                        </div>
+                    </div>                
                 }
             </div>
+            @if (team.BenchPlayers.Count != 0)
+            {
+                <h5 style="margin: 20px 0px 0px 10px;">Bench</h5>
+                <div class="players">
+                    @foreach (var player in team.BenchPlayers)
+                    {
+                        <div class="player">
+                            <p class="player-name">@player.Name</p>
+                        </div>
+                    }
+                </div>
+            }
         </div>
     }
 </div>
