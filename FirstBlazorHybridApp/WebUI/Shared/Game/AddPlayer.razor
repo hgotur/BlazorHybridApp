@@ -1,4 +1,5 @@
 @using FirstBlazorHybridApp.Game
+@inject IJSRuntime JSRuntime
 
 @if (!this.showAdd)
 {
@@ -7,9 +8,13 @@
 else
 {
 <div>
-    <input type="text" placeholder="Team Name" @bind="this.name" />
-    <button class="btn btn-primary" @onclick="() => this.onAdd()">+</button>
-    <button class="btn btn-primary" @onclick="() => this.toggleAdd()">x</button>
+    <input type="text" placeholder="Player Name" @bind="this.name" @onkeypress="this.onEnter" @ref="this.inputElt"/>
+    <button class="btn btn-primary" @onclick="() => this.onAdd()">
+        <ion-icon name="add-outline" class="icon"></ion-icon>
+    </button>
+    <button class="btn btn-primary" @onclick="() => this.toggleAdd()">
+        <ion-icon name="close-outline" class="icon"></ion-icon>
+    </button>
 </div>
 }
 
@@ -19,6 +24,7 @@ else
 
     private string name = "";
     private bool showAdd = false;
+    private ElementReference inputElt;
 
     private void toggleAdd()
     {
@@ -32,6 +38,22 @@ else
         {
             this.Add(this.name, this.Team);
             this.toggleAdd();
+        }
+    }
+
+    private void onEnter(KeyboardEventArgs eventArgs)
+    {
+        if (eventArgs.Code == "Enter")
+        {
+            onAdd();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (this.showAdd)
+        {
+            await JSRuntime.InvokeVoidAsync("FocusElement", inputElt);
         }
     }
 }

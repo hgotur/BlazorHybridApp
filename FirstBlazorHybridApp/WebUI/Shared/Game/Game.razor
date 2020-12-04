@@ -4,20 +4,27 @@
 
 <h1>Game</h1>
 
-@foreach (var team in this.State.GameState.Teams)
-{
-    <div>
-        <h3>@team.Name</h3>
-        @foreach (var player in team.ActivePlayers)
-        {
-            <div>
-                <p>@player.Name</p>
+<div class="game-page">
+    @foreach (var team in this.State.GameState.Teams)
+    {
+        <div class="team">
+            <div class="team-header">
+                <h3 class="team-name">@team.Name</h3>
+                <div class="add-player">
+                    <AddPlayer Add="addPlayer" Team="team" />
+                </div>
             </div>
-        }
-
-        <AddPlayer Add="addPlayer" Team="team" />
-    </div>
-}
+            <div class="active-players">
+                @foreach (var player in team.ActivePlayers)
+                {   
+                    <div>
+                        <p>@player.Name</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     private void addPlayer(string name, Team team)
