@@ -3,7 +3,7 @@
 @using FirstBlazorHybridApp.Game;
 @using FirstBlazorHybridApp.WebUI.Shared.Game;
 
-@if (this.State.GameState.GameProgress.Status == GameStatus.NOT_STARTED)
+@if (this.State.GameState.Status == GameStatus.NOT_STARTED)
 {
     <Setup />
 }

@@ -15,7 +15,7 @@
             <div class="players active-players">
                 @foreach (var player in team.ActivePlayers)
                 {
-                    <div class="player active-player">
+                    <div class="player @(State.GameState.CurrentQuestion.CanAnswer(team) ? "can-answer" : "")">
                         <div class="player-name">
                             @player.Name
                         </div>

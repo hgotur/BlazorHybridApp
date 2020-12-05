@@ -69,15 +69,15 @@ a, .btn-link {
     color: black;
 }
 
-.active-player:hover {
+.can-answer:hover {
     padding: 0px
 }
 
-.active-player:hover .player-name {
+.can-answer:hover .player-name {
     display: none;
 }
 
-.active-player:hover .player-actions {
+.can-answer:hover .player-actions {
     display: flex;
     cursor: pointer;
 }

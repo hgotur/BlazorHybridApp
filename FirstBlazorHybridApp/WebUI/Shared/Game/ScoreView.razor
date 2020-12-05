@@ -2,12 +2,12 @@
 @using FirstBlazorHybridApp.Game;
 
 <div class="question-status">
-    @if (State.GameState.GameProgress.Status == GameStatus.IN_PROGESS)
+    @if (State.GameState.Status == GameStatus.IN_PROGESS)
     {
-        <h3>Question @(State.GameState.GameProgress.CurrentQuestion + 1)</h3>
-        @if (State.GameState.Questions[State.GameState.GameProgress.CurrentQuestion].IsInBonus)
+        <h3>Question @State.GameState.Questions.Count</h3>
+        @if (State.GameState.CurrentQuestion.IsInBonus)
         {
-            <h5>Bonus for @State.GameState.Questions[State.GameState.GameProgress.CurrentQuestion].AnsweredByTeam?.Name</h5>
+            <h5>Bonus for @State.GameState.CurrentQuestion.AnsweredByTeam?.Name</h5>
         }
         else
         {

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using BlazorRedux;
 using FirstBlazorHybridApp.Game;
 
@@ -9,8 +11,22 @@ namespace FirstBlazorHybridApp.redux.slices
         // state
         public List<Question> Questions { get; private set; } = new List<Question>();
         public List<Team> Teams { get; private set; } = new List<Team>();
-        public GameProgress GameProgress { get; private set; } = new GameProgress();
+        public GameStatus Status { get; private set; } = GameStatus.NOT_STARTED;
         public Metadata Metadata { get; private set; } = new Metadata();
+
+        [JsonIgnore]
+        public Question CurrentQuestion 
+        { 
+            get
+            {
+                if (Questions.Count == 0)
+                {
+                    throw new Exception("There is no current question.");
+                }
+
+                return Questions[Questions.Count - 1];
+            } 
+        }
 
         public int GetScore(Team team)
         {
@@ -84,7 +100,7 @@ namespace FirstBlazorHybridApp.redux.slices
                 case StartGame a:
                     {
                         newState.Metadata = a.Metadata;
-                        newState.GameProgress.Status = GameStatus.IN_PROGESS;
+                        newState.Status = GameStatus.IN_PROGESS;
                         for (int i =  0; i < a.Metadata.NumTeams; ++i) {
                             newState.Teams.Add(new Team(a.Metadata, $"Team {i + 1}"));
                         }

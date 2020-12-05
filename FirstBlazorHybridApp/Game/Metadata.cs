@@ -36,11 +36,4 @@ namespace FirstBlazorHybridApp.Game {
         IN_PROGESS,
         COMPLETED
     }
-
-    public class GameProgress
-    {
-        public GameStatus Status { get; set; } = GameStatus.NOT_STARTED;
-        public int CurrentQuestion { get; set; } = 0;
-        public bool IsInBonus { get; set; } = false;
-    }
 }
