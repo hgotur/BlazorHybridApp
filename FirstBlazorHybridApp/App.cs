@@ -36,7 +36,7 @@ namespace FirstBlazorHybridApp
             }
             var host = hostBuilder.Build();
 
-            MainPage = new ContentPage { Title = "My Application" };
+            MainPage = new ContentPage { Title = "Quiz Bowl Score Keeper" };
             host.AddComponent<Main>(parent: MainPage);
         }
 

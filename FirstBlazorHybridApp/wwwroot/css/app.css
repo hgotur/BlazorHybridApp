@@ -21,11 +21,18 @@ a, .btn-link {
 }
 
 .team {
-    margin: 40px;
+    margin: 40px 20px;
     min-width: 300px;
-    max-width: 400px;
+    max-width: 500px;
     width: 100%;
     padding: 10px;
+    flex-grow: 1;
+}
+
+.score-view {
+    margin: 40px 20px;
+    padding: 10px;
+    width: 300px;
 }
 
 .active-players {
@@ -51,6 +58,67 @@ a, .btn-link {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+}
+
+.player-actions {
+    height: 100%;
+    width: 100%;
+    display: none;
+    font-size: 10px;
+    color: black;
+}
+
+.active-player:hover {
+    padding: 0px
+}
+
+.active-player:hover .player-name {
+    display: none;
+}
+
+.active-player:hover .player-actions {
+    display: flex;
+    cursor: pointer;
+}
+
+.power-action {
+    background-color: #80A7D6;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    padding: 5px;
+    border: solid 3px #80A7D6;
+}
+
+.power-action:hover {
+    border-color: #3E79C1;
+}
+
+.tossup-action {
+    background-color: #A7CAB1;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    border: solid 3px #A7CAB1;
+}
+
+.tossup-action:hover {
+    border-color: #609F72;
+}
+
+.neg-action {
+    background-color: #F67E7E;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    height: 100%;
+    padding: 5px;
+    border: solid 3px #F67E7E;
+}
+
+.neg-action:hover {
+    border-color: #EE1111;
 }
 
 .player-name {
@@ -61,6 +129,11 @@ a, .btn-link {
 
 .team-name {
     text-align: center;
+}
+
+.question-status {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .btn-primary {

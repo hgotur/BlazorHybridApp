@@ -12,6 +12,17 @@ namespace FirstBlazorHybridApp.redux.slices
         public GameProgress GameProgress { get; private set; } = new GameProgress();
         public Metadata Metadata { get; private set; } = new Metadata();
 
+        public int GetScore(Team team)
+        {
+            int score = 0;
+            foreach (var question in Questions)
+            {
+                score += question.GetPtsEarned(team);
+            }
+
+            return score;
+        }
+
         // actions
         public class AddPlayer : IAction {
             public string Name { get; private set; }
@@ -31,6 +42,29 @@ namespace FirstBlazorHybridApp.redux.slices
             public StartGame(Metadata metadata)
             {
                 Metadata = metadata;
+            }
+        }
+
+        public class AwardTossup : IAction
+        {
+            public Player Player { get; private set; }
+
+            public TossupResult TossupResult { get; private set; }
+
+            public AwardTossup(Player player, TossupResult tossupResult)
+            {
+                Player = player;
+                TossupResult = tossupResult;
+            }
+        }
+
+        public class AwardNeg : IAction
+        {
+            public Player Player { get; private set; }
+
+            public AwardNeg(Player player)
+            {
+                Player = player;
             }
         }
 
@@ -54,6 +88,17 @@ namespace FirstBlazorHybridApp.redux.slices
                         for (int i =  0; i < a.Metadata.NumTeams; ++i) {
                             newState.Teams.Add(new Team(a.Metadata, $"Team {i + 1}"));
                         }
+                        newState.Questions.Add(new Question(a.Metadata));
+                        return newState;
+                    }
+                case AwardTossup a:
+                    {
+                        newState.Questions[newState.Questions.Count - 1].AwardTossup(a.Player, newState.Teams, a.TossupResult);
+                        return newState;
+                    }
+                case AwardNeg a:
+                    {
+                        newState.Questions[newState.Questions.Count - 1].AwardNeg(a.Player);
                         return newState;
                     }
                 default:

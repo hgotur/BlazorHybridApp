@@ -83,7 +83,7 @@ namespace FirstBlazorHybridApp.Game {
     public class Question
     {
         private Metadata metadata;
-        public TossupResult TossupResult { get; private set; }
+        public TossupResult? TossupResult { get; private set; }
         public List<BonusResult> BonusResults { get; private set; } = new List<BonusResult>();
 
         public List<Player> HeardBy { get; } = new List<Player>();
@@ -97,6 +97,64 @@ namespace FirstBlazorHybridApp.Game {
             this.metadata = metadata;
         }
 
+        public bool IsInBonus
+        {
+            get
+            {
+                if (TossupResult.HasValue && TossupResult.Value != Game.TossupResult.NO_ANSWER)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public int GetPtsEarned(Team team)
+        {
+            int score = 0;
+            if (NegsByTeam.Contains(team))
+            {
+                score += metadata.NegWeight ?? 0;
+            }
+
+            if (AnsweredByTeam == team)
+            {
+                score += TossupResult == Game.TossupResult.POWER 
+                    ? (metadata.PowerWeight ?? metadata.TossupWeight) 
+                    : metadata.TossupWeight;
+
+                foreach (var bonusResult in BonusResults)
+                {
+                    score += bonusResult == BonusResult.ANSWERED ? metadata.BonusWeight : 0;
+                }
+            }
+            else
+            {
+                foreach (var bonusResult in BonusResults)
+                {
+                    score += bonusResult == BonusResult.BOUNCE_BACK ? metadata.BonusWeight : 0;
+                }
+            }
+
+            return score;
+        }
+
+        public bool CanAnswer(Team team)
+        {
+            if (IsInBonus) return false;
+
+            foreach (var negTeam in NegsByTeam)
+            {
+                if (team == negTeam)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void AddHeardBy(IList<Team> teams)
         {
             foreach (Team team in teams)
@@ -107,8 +165,9 @@ namespace FirstBlazorHybridApp.Game {
 
         public void AwardTossup(Player player, IList<Team> teams, TossupResult tossupResult)
         {
+            // TODO: HARSHA: validation that team didn't already neg the tossup
             TossupResult = tossupResult;
-            if (tossupResult != TossupResult.NO_ANSWER)
+            if (tossupResult != Game.TossupResult.NO_ANSWER)
             {
                 AnsweredByPlayer = player;
                 AnsweredByTeam = player.Team;
@@ -125,13 +184,16 @@ namespace FirstBlazorHybridApp.Game {
 
         public void AwardNoAnswer(IList<Team> teams)
         {
-            TossupResult = TossupResult.NO_ANSWER;
+            // TODO: HARSHA: we could have a bug with bouncebacks if we allow you to retroactively change tossup result.
+            TossupResult = Game.TossupResult.NO_ANSWER;
+            AnsweredByPlayer = null;
+            AnsweredByTeam = null;
             AddHeardBy(teams);
         }
 
         public void AwardBonus(BonusResult bonusResult)
         {
-            if (TossupResult == TossupResult.NO_ANSWER)
+            if (TossupResult == Game.TossupResult.NO_ANSWER)
             {
                 throw new Exception("Can't award bonus if the tossup hasn't been answered.");
             }

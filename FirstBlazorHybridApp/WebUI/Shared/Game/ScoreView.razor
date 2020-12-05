@@ -1,0 +1,61 @@
+﻿@inherits ConnectedComponent
+@using FirstBlazorHybridApp.Game;
+
+<div class="question-status">
+    @if (State.GameState.GameProgress.Status == GameStatus.IN_PROGESS)
+    {
+        <h3>Question @(State.GameState.GameProgress.CurrentQuestion + 1)</h3>
+        @if (State.GameState.Questions[State.GameState.GameProgress.CurrentQuestion].IsInBonus)
+        {
+            <h5>Bonus for @State.GameState.Questions[State.GameState.GameProgress.CurrentQuestion].AnsweredByTeam?.Name</h5>
+        }
+        else
+        {
+            <h5>Toss-Up</h5>
+        }
+    }
+    else
+    {
+        <h3>Complete</h3>
+    }
+</div>
+
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <td></td>
+            @foreach (var team in State.GameState.Teams)
+            {
+                <th>@team.Name</th>
+            }
+        </tr>
+    </thead>
+    <tbody> 
+        @for (int i = 0; i < State.GameState.Questions.Count; i++)
+        {
+            <tr>
+                <th>@($"Q{i + 1}")</th>
+                @foreach (var team in State.GameState.Teams)
+                {
+                    int ptsEarned = State.GameState.Questions[i].GetPtsEarned(team);
+                    if (ptsEarned != 0)
+                    {
+                        <td>@ptsEarned</td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        }
+        <tr>
+            <td></td>
+            @foreach (var team in State.GameState.Teams)
+            {
+                <th>@State.GameState.GetScore(team)</th>
+            }
+        </tr>
+    </tbody>
+</table>

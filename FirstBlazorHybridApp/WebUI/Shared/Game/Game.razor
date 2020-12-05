@@ -15,9 +15,20 @@
             <div class="players active-players">
                 @foreach (var player in team.ActivePlayers)
                 {
-                    <div class="player">
+                    <div class="player active-player">
                         <div class="player-name">
                             @player.Name
+                        </div>
+                        <div class="player-actions">
+                            @if (State.GameState.Metadata.PowerWeight.HasValue)
+                            {
+                                <div class="power-action" @onclick="() => this.awardTossup(player, TossupResult.POWER)">POWER</div>
+                            }
+                            <div class="tossup-action" @onclick="() => this.awardTossup(player, TossupResult.NORMAL)">TOSS<br />UP</div>
+                            @if (State.GameState.Metadata.NegWeight.HasValue)
+                            {
+                                <div class="neg-action" @onclick="() => this.awardNeg(player)">NEG</div>
+                            }
                         </div>
                     </div>                
                 }
@@ -36,11 +47,25 @@
             }
         </div>
     }
+
+    <div class="score-view">
+        <ScoreView />
+    </div>
 </div>
 
 @code {
     private void addPlayer(string name, Team team)
     {
         this.Dispatch(new GameSlice.AddPlayer(name, team));
+    }
+
+    private void awardTossup(Player player, TossupResult tossupResult)
+    {
+        this.Dispatch(new GameSlice.AwardTossup(player, tossupResult));
+    }
+
+    private void awardNeg(Player player)
+    {
+        this.Dispatch(new GameSlice.AwardNeg(player));
     }
 }
