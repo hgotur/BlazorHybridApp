@@ -100,6 +100,8 @@ namespace FirstBlazorHybridApp.redux.slices
             }
         }
 
+        public class AwardNoAnswer : IAction {}
+
         // reducer
         public static GameSlice GameReducer(GameSlice oldState, IAction action)
         {
@@ -145,6 +147,12 @@ namespace FirstBlazorHybridApp.redux.slices
                         {
                             newState.Questions.Add(new Question(newState.Metadata));
                         }
+                        return newState;
+                    }
+                case AwardNoAnswer a:
+                    {
+                        newState.CurrentQuestion.AwardNoAnswer(newState.Teams);
+                        newState.Questions.Add(new Question(newState.Metadata));
                         return newState;
                     }
                 default:

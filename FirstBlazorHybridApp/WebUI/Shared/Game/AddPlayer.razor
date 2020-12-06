@@ -3,16 +3,16 @@
 
 @if (!this.showAdd)
 {
-    <button class="btn btn-primary" @onclick="this.toggleAdd">Add Player</button>
+    <button class="btn btn-dark" @onclick="this.toggleAdd">Add Player</button>
 }
 else
 {
-<div>
+<div class="add-player">
     <input type="text" placeholder="Player Name" @bind="this.name" @bind:event="oninput" @onkeypress="this.onEnter" @ref="this.inputElt"/>
-    <button class="btn btn-primary" @onclick="() => this.onAdd()">
+    <button class="btn btn-dark" @onclick="() => this.onAdd()">
         <ion-icon name="checkmark-outline" class="icon"></ion-icon>
     </button>
-    <button class="btn btn-primary" @onclick="() => this.toggleAdd()">
+    <button class="btn btn-dark" @onclick="() => this.toggleAdd()">
         <ion-icon name="close-outline" class="icon"></ion-icon>
     </button>
 </div>
