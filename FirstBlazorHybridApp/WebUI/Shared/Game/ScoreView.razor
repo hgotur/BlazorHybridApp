@@ -1,26 +1,7 @@
 ﻿@inherits ConnectedComponent
 @using FirstBlazorHybridApp.Game;
 
-<div class="question-status">
-    @if (State.GameState.Status == GameStatus.IN_PROGESS)
-    {
-        <h3>Question @State.GameState.Questions.Count</h3>
-        @if (State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.TOSSUP)
-        {
-            <h5>Toss-Up</h5>
-        }
-        else
-        {
-            <h5>Bonus for @State.GameState.CurrentQuestion.AnsweredByTeam?.Name</h5>
-        }
-    }
-    else
-    {
-        <h3>Complete</h3>
-    }
-</div>
-
-
+<h3 class="question-header">Score</h3>
 <table class="table table-sm">
     <thead>
         <tr>

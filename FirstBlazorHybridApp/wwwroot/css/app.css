@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #FFF7E5;
 }
 
 a, .btn-link {
@@ -15,7 +16,13 @@ a, .btn-link {
     margin: auto;
 }
 
-.game-page {
+.game-header {
+    text-align: center;
+    height: 160px;
+    margin-bottom: 20px;
+}
+
+.game-body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -23,12 +30,22 @@ a, .btn-link {
 }
 
 .team {
-    margin: 40px 20px;
+    margin: 20px;
     min-width: 300px;
     max-width: 500px;
     width: 100%;
-    padding: 10px;
+    padding: 20px;
     flex-grow: 1;
+    background-color: #F2F2F2;
+    border-radius: 5px;
+}
+
+.question-header {
+    text-align: center;
+}
+
+.add-player {
+    height: 40px;
 }
 
 .score-view {
@@ -39,11 +56,11 @@ a, .btn-link {
 
 .active-area {
     margin-top: 20px;
-    background-color: aliceblue;
+    background-color: #D1D1D1;
+    min-height: 210px;
 }
 
 .players {
-    min-height: 100px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -51,16 +68,17 @@ a, .btn-link {
 }
 
 .player {
-    background-color: greenyellow;
+    background-color: #FFA805;
     padding: 10px;
     border-radius: 5px;
     margin: 10px;
-    width: 25%;
+    width: 126px;
     height: 75px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    border: solid 1px #E69500;
 }
 
 .player-actions {
@@ -123,6 +141,24 @@ a, .btn-link {
     border-color: #EE1111;
 }
 
+.bonus {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+}
+
+.bonus-header {
+    margin: 40px;
+}
+
+.bonus-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .player-name {
     text-align: center;
     overflow-wrap: break-word;
@@ -133,10 +169,7 @@ a, .btn-link {
     text-align: center;
 }
 
-.question-status {
-    text-align: center;
-    margin-bottom: 20px;
-}
+
 
 .btn-primary {
     color: #fff;

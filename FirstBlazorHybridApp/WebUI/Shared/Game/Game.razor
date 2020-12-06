@@ -3,25 +3,47 @@
 @using FirstBlazorHybridApp.Game;
 
 <div class="game-page">
-    @foreach (var team in this.State.GameState.Teams)
-    {
+    <div class="game-header">
+        @if (State.GameState.Status == GameStatus.IN_PROGESS)
+        {
+            <h1>Question @State.GameState.Questions.Count</h1>
+            @if (State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.TOSSUP)
+            {
+                <h3>Toss-Up</h3>
+                <button class="btn btn-dark" @onclick="this.AwardNoAnswer">No Answer</button> 
+            }
+            else
+            {
+                <h3>Bonus for @State.GameState.CurrentQuestion.AnsweredByTeam?.Name</h3>
+            }
+        }
+        else
+        {
+            <h3>Complete</h3>
+        }
+    </div>
+    <div class="game-body">
+        @foreach (var team in this.State.GameState.Teams)
+        {
         <div class="team">
-            <div class="team-header">
+             <div class="team-header">
                 <h3 class="team-name">@team.Name</h3>
                 <div class="add-player">
                     <AddPlayer Add="AddPlayer" Team="team" />
                 </div>
-            </div>
-            <div class="active-area">
-                @if (State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.BONUS && State.GameState.CurrentQuestion.AnsweredByTeam == team
+             </div>
+             <div class="active-area">
+                 @if (State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.BONUS && State.GameState.CurrentQuestion.AnsweredByTeam == team
                     || State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.BOUNCED_BONUS && State.GameState.CurrentQuestion.AnsweredByTeam != team)
-                {
-                     <div class="bonus">
-                         <div>Bonus @(State.GameState.CurrentQuestion.BonusResults.Count + 1)</div>
-                         <button class="btn btn-primary" @onclick="() => this.AwardBonus(true)">Correct</button>
-                         <button class="btn btn-primary" @onclick="() => this.AwardBonus(false)">Incorrect</button>
-                     </div>
-                }
+                  {
+                        <div class="bonus">
+                            <h2 class="bonus-header">Bonus @(State.GameState.CurrentQuestion.BonusResults.Count + 1)</h2>
+                            <div class="bonus-options">
+                                <button class="btn btn-dark" @onclick="() => this.AwardBonus(true)">Correct</button>
+                                <button class="btn btn-dark" @onclick="() => this.AwardBonus(false)">Incorrect</button>
+                            </div>
+                        </div> 
+                  }  
                 else
                 {
                     <div class="players">
@@ -43,29 +65,30 @@
                                     }
                                 </div>
                             </div>
-                         }
-                    </div>
+                        }
+                    </div>          
                 }
             </div>
-
             @if (team.BenchPlayers.Count != 0)
             {
                 <h5 style="margin: 20px 0px 0px 10px;">Bench</h5>
-                <div class="players">
-                    @foreach (var player in team.BenchPlayers)
-                    {
-                        <div class="player">
-                            <p class="player-name">@player.Name</p>
-                        </div>
-                    }
-                </div>
+                    <div class="players">
+                        @foreach (var player in team.BenchPlayers)
+                        {
+                            <div class="player">
+                                <div class="player-name">@player.Name</div>
+                            </div>          
+                        }
+                    </div>
             }
         </div>
     }
 
-    <div class="score-view">
-        <ScoreView />
+        <div class="score-view">
+            <ScoreView />
+        </div>
     </div>
+
 </div>
 
 @code {
@@ -92,5 +115,10 @@
     private void AwardBonus(bool isCorrect)
     {
         this.Dispatch(new GameSlice.AwardBonus(isCorrect));
+    }
+
+    private void AwardNoAnswer()
+    {
+        this.Dispatch(new GameSlice.AwardNoAnswer());
     }
 }
