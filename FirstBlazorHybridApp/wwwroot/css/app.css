@@ -11,6 +11,8 @@ a, .btn-link {
 .icon {
     color: #FFF;
     font-size: 20px;
+    display: block;
+    margin: auto;
 }
 
 .game-page {
