@@ -60,17 +60,23 @@ namespace FirstBlazorHybridApp.redux.slices
                 Metadata = metadata;
             }
         }
+        public class AwardPower : IAction
+        {
+            public Player Player { get; private set; }
+
+            public AwardPower(Player player)
+            {
+                Player = player;
+            }
+        }
 
         public class AwardTossup : IAction
         {
             public Player Player { get; private set; }
 
-            public TossupResult TossupResult { get; private set; }
-
-            public AwardTossup(Player player, TossupResult tossupResult)
+            public AwardTossup(Player player)
             {
                 Player = player;
-                TossupResult = tossupResult;
             }
         }
 
@@ -81,6 +87,16 @@ namespace FirstBlazorHybridApp.redux.slices
             public AwardNeg(Player player)
             {
                 Player = player;
+            }
+        }
+
+        public class AwardBonus : IAction
+        {
+            public bool IsCorrect { get; private set; }
+
+            public AwardBonus(bool isCorrect)
+            {
+                IsCorrect = isCorrect;
             }
         }
 
@@ -107,14 +123,28 @@ namespace FirstBlazorHybridApp.redux.slices
                         newState.Questions.Add(new Question(a.Metadata));
                         return newState;
                     }
+                case AwardPower a:
+                    {
+                        newState.CurrentQuestion.AwardPower(a.Player, newState.Teams);
+                        return newState;
+                    }
                 case AwardTossup a:
                     {
-                        newState.Questions[newState.Questions.Count - 1].AwardTossup(a.Player, newState.Teams, a.TossupResult);
+                        newState.CurrentQuestion.AwardTossup(a.Player, newState.Teams);
                         return newState;
                     }
                 case AwardNeg a:
                     {
-                        newState.Questions[newState.Questions.Count - 1].AwardNeg(a.Player);
+                        newState.CurrentQuestion.AwardNeg(a.Player);
+                        return newState;
+                    }
+                case AwardBonus a:
+                    {
+                        newState.CurrentQuestion.AwardBonus(a.IsCorrect);
+                        if (newState.CurrentQuestion.QuestionStatus == QuestionStatus.COMPLETE)
+                        {
+                            newState.Questions.Add(new Question(newState.Metadata));
+                        }
                         return newState;
                     }
                 default:

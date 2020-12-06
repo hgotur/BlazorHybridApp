@@ -19,7 +19,7 @@ namespace FirstBlazorHybridApp.Game {
     public enum TossupResult
     {
         NO_ANSWER,
-        NORMAL,
+        TOSSUP,
         POWER
     }
 

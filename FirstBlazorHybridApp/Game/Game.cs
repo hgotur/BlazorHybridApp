@@ -80,6 +80,14 @@ namespace FirstBlazorHybridApp.Game {
         }
     }
 
+    public enum QuestionStatus
+    {
+        TOSSUP,
+        BONUS,
+        BOUNCED_BONUS,
+        COMPLETE,
+    }
+
     public class Question
     {
         private Metadata metadata;
@@ -91,23 +99,11 @@ namespace FirstBlazorHybridApp.Game {
         public Team? AnsweredByTeam { get; private set; }
         public List<Player> NegsByPlayer { get; } = new List<Player>();
         public List<Team> NegsByTeam { get; } = new List<Team>();
+        public QuestionStatus QuestionStatus { get; private set; } = QuestionStatus.TOSSUP;
 
         public Question(Metadata metadata)
         {
             this.metadata = metadata;
-        }
-
-        public bool IsInBonus
-        {
-            get
-            {
-                if (TossupResult.HasValue && TossupResult.Value != Game.TossupResult.NO_ANSWER)
-                {
-                    return true;
-                }
-
-                return false;
-            }
         }
 
         public int GetPtsEarned(Team team)
@@ -120,8 +116,8 @@ namespace FirstBlazorHybridApp.Game {
 
             if (AnsweredByTeam == team)
             {
-                score += TossupResult == Game.TossupResult.POWER 
-                    ? (metadata.PowerWeight ?? metadata.TossupWeight) 
+                score += TossupResult == Game.TossupResult.POWER
+                    ? (metadata.PowerWeight ?? metadata.TossupWeight)
                     : metadata.TossupWeight;
 
                 foreach (var bonusResult in BonusResults)
@@ -140,13 +136,13 @@ namespace FirstBlazorHybridApp.Game {
             return score;
         }
 
-        public bool CanAnswer(Team team)
+        public bool CanAnswerTossup(Player player)
         {
-            if (IsInBonus) return false;
+            if (QuestionStatus != QuestionStatus.TOSSUP) return false;
 
             foreach (var negTeam in NegsByTeam)
             {
-                if (team == negTeam)
+                if (player.Team == negTeam)
                 {
                     return false;
                 }
@@ -163,17 +159,24 @@ namespace FirstBlazorHybridApp.Game {
             }
         }
 
-        public void AwardTossup(Player player, IList<Team> teams, TossupResult tossupResult)
+        public void AwardPower(Player player, IList<Team> teams)
         {
             // TODO: HARSHA: validation that team didn't already neg the tossup
-            TossupResult = tossupResult;
-            if (tossupResult != Game.TossupResult.NO_ANSWER)
-            {
-                AnsweredByPlayer = player;
-                AnsweredByTeam = player.Team;
-            }
-
+            TossupResult = Game.TossupResult.POWER;
+            AnsweredByPlayer = player;
+            AnsweredByTeam = player.Team;
             AddHeardBy(teams);
+            QuestionStatus = QuestionStatus.BONUS;
+        }
+
+        public void AwardTossup(Player player, IList<Team> teams)
+        {
+            // TODO: HARSHA: validation that team didn't already neg the tossup
+            TossupResult = Game.TossupResult.TOSSUP;
+            AnsweredByPlayer = player;
+            AnsweredByTeam = player.Team;
+            AddHeardBy(teams);
+            QuestionStatus = QuestionStatus.BONUS;
         }
 
         public void AwardNeg(Player player)
@@ -189,13 +192,14 @@ namespace FirstBlazorHybridApp.Game {
             AnsweredByPlayer = null;
             AnsweredByTeam = null;
             AddHeardBy(teams);
+            QuestionStatus = QuestionStatus.COMPLETE;
         }
 
-        public void AwardBonus(BonusResult bonusResult)
+        public void AwardBonus(bool isCorrect)
         {
-            if (TossupResult == Game.TossupResult.NO_ANSWER)
+            if (TossupResult == Game.TossupResult.NO_ANSWER || QuestionStatus == QuestionStatus.TOSSUP || QuestionStatus == QuestionStatus.COMPLETE)
             {
-                throw new Exception("Can't award bonus if the tossup hasn't been answered.");
+                throw new Exception("Can't award bonus if the question is not in bonus phase.");
             }
 
             if (BonusResults.Count >= this.metadata.NumBonusPerTossup)
@@ -203,7 +207,41 @@ namespace FirstBlazorHybridApp.Game {
                 throw new Exception($"Can't award more than {this.metadata.NumBonusPerTossup} bonuses per tossup.");
             }
 
-            BonusResults.Add(bonusResult);
+            if (isCorrect)
+            {
+                if (QuestionStatus == QuestionStatus.BONUS)
+                {
+                    BonusResults.Add(BonusResult.ANSWERED);
+                }
+                else
+                {
+                    // question status is bounced_bonus
+                    BonusResults.Add(BonusResult.BOUNCE_BACK);
+                    QuestionStatus = QuestionStatus.BONUS;
+                }
+            }
+            else if (metadata.BounceBacks)
+            {
+                if (QuestionStatus == QuestionStatus.BONUS)
+                {
+                    QuestionStatus = QuestionStatus.BOUNCED_BONUS;
+                }
+                else
+                {
+                    // question status is bounced_bonus
+                    BonusResults.Add(BonusResult.NO_ANSWER);
+                    QuestionStatus = QuestionStatus.BONUS;
+                }
+            }
+            else
+            {
+                BonusResults.Add(BonusResult.NO_ANSWER);
+            }
+
+            if (BonusResults.Count == metadata.NumBonusPerTossup)
+            {
+                QuestionStatus = QuestionStatus.COMPLETE;
+            }
         }
     }
 }

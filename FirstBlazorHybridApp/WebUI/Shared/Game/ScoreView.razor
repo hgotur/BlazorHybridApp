@@ -5,13 +5,13 @@
     @if (State.GameState.Status == GameStatus.IN_PROGESS)
     {
         <h3>Question @State.GameState.Questions.Count</h3>
-        @if (State.GameState.CurrentQuestion.IsInBonus)
+        @if (State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.TOSSUP)
         {
-            <h5>Bonus for @State.GameState.CurrentQuestion.AnsweredByTeam?.Name</h5>
+            <h5>Toss-Up</h5>
         }
         else
         {
-            <h5>Toss-Up</h5>
+            <h5>Bonus for @State.GameState.CurrentQuestion.AnsweredByTeam?.Name</h5>
         }
     }
     else

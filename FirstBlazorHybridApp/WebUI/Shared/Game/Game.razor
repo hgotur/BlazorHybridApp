@@ -9,30 +9,45 @@
             <div class="team-header">
                 <h3 class="team-name">@team.Name</h3>
                 <div class="add-player">
-                    <AddPlayer Add="addPlayer" Team="team" />
+                    <AddPlayer Add="AddPlayer" Team="team" />
                 </div>
             </div>
-            <div class="players active-players">
-                @foreach (var player in team.ActivePlayers)
+            <div class="active-area">
+                @if (State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.BONUS && State.GameState.CurrentQuestion.AnsweredByTeam == team
+                    || State.GameState.CurrentQuestion.QuestionStatus == QuestionStatus.BOUNCED_BONUS && State.GameState.CurrentQuestion.AnsweredByTeam != team)
                 {
-                    <div class="player @(State.GameState.CurrentQuestion.CanAnswer(team) ? "can-answer" : "")">
-                        <div class="player-name">
-                            @player.Name
-                        </div>
-                        <div class="player-actions">
-                            @if (State.GameState.Metadata.PowerWeight.HasValue)
-                            {
-                                <div class="power-action" @onclick="() => this.awardTossup(player, TossupResult.POWER)">POWER</div>
-                            }
-                            <div class="tossup-action" @onclick="() => this.awardTossup(player, TossupResult.NORMAL)">TOSS<br />UP</div>
-                            @if (State.GameState.Metadata.NegWeight.HasValue)
-                            {
-                                <div class="neg-action" @onclick="() => this.awardNeg(player)">NEG</div>
-                            }
-                        </div>
-                    </div>                
+                     <div class="bonus">
+                         <div>Bonus @(State.GameState.CurrentQuestion.BonusResults.Count + 1)</div>
+                         <button class="btn btn-primary" @onclick="() => this.AwardBonus(true)">Correct</button>
+                         <button class="btn btn-primary" @onclick="() => this.AwardBonus(false)">Incorrect</button>
+                     </div>
+                }
+                else
+                {
+                    <div class="players">
+                        @foreach (var player in team.ActivePlayers)
+                        {
+                            <div class="player @(State.GameState.CurrentQuestion.CanAnswerTossup(player) ? "can-answer" : "")">
+                                <div class="player-name">
+                                    @player.Name
+                                </div>
+                                <div class="player-actions">
+                                    @if (State.GameState.Metadata.PowerWeight.HasValue)
+                                    {
+                                        <div class="power-action" @onclick="() => this.AwardPower(player)">POWER</div>
+                                    }
+                                    <div class="tossup-action" @onclick="() => this.AwardTossup(player)">TOSS<br />UP</div>
+                                    @if (State.GameState.Metadata.NegWeight.HasValue)
+                                    {
+                                        <div class="neg-action" @onclick="() => this.AwardNeg(player)">NEG</div>
+                                    }
+                                </div>
+                            </div>
+                         }
+                    </div>
                 }
             </div>
+
             @if (team.BenchPlayers.Count != 0)
             {
                 <h5 style="margin: 20px 0px 0px 10px;">Bench</h5>
@@ -54,18 +69,28 @@
 </div>
 
 @code {
-    private void addPlayer(string name, Team team)
+    private void AddPlayer(string name, Team team)
     {
         this.Dispatch(new GameSlice.AddPlayer(name, team));
     }
 
-    private void awardTossup(Player player, TossupResult tossupResult)
+    private void AwardPower(Player player)
     {
-        this.Dispatch(new GameSlice.AwardTossup(player, tossupResult));
+        this.Dispatch(new GameSlice.AwardPower(player));
     }
 
-    private void awardNeg(Player player)
+    private void AwardTossup(Player player)
+    {
+        this.Dispatch(new GameSlice.AwardTossup(player));
+    }
+
+    private void AwardNeg(Player player)
     {
         this.Dispatch(new GameSlice.AwardNeg(player));
+    }
+
+    private void AwardBonus(bool isCorrect)
+    {
+        this.Dispatch(new GameSlice.AwardBonus(isCorrect));
     }
 }
